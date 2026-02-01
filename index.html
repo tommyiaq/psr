@@ -10,11 +10,11 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 20px;
             display: flex;
-            justify-content: space-between;
-            padding: 20px;
+            gap: 0;
+            padding: 10px;
         }
         .questions {
-            width: 45%;
+            flex: 0 0 40%;
         }
         h2 {
             font-size: 28px;
@@ -26,6 +26,14 @@
             margin-bottom: 20px;
         }
         .frozen-shoulder h3 {
+            margin-top: 0;
+        }
+        .lesione-cuffia {
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .lesione-cuffia h3 {
             margin-top: 0;
         }
         #marker {
@@ -52,7 +60,7 @@
             width: 60px;
         }
         .chart {
-            width: 45%;
+            flex: 1;
             height: 550px;
         }
         @media (max-width: 768px) {
@@ -92,7 +100,7 @@
     <div class="questions">
         <h2>Progetto Rivoluzione Spalla:</h2>
         <div class="frozen-shoulder">
-            <h3>Frozen Shoulder<span id="marker"></span></h3>
+            <h3>PROM<span id="marker"></span></h3>
             <table class="sub-table">
                 <tr>
                     <th>Metrica</th>
@@ -102,85 +110,187 @@
                 </tr>
                 <tr>
                     <td>1. IR braccio addotto (0-45)</td>
-                    <td><input type="number" id="ir-add-dx" min="0" max="45" value="45"></td>
-                    <td><input type="number" id="ir-add-sn" min="0" max="45" value="45"></td>
+                    <td><input type="number" id="ir-add-dx" min="0" max="45" value="45">°</td>
+                    <td><input type="number" id="ir-add-sn" min="0" max="45" value="45">°</td>
                     <td><span id="ir-add-perc">100%</span></td>
                 </tr>
                 <tr>
                     <td>2. ER braccio addotto (0-90)</td>
-                    <td><input type="number" id="er-add-dx" min="0" max="90" value="90"></td>
-                    <td><input type="number" id="er-add-sn" min="0" max="90" value="90"></td>
+                    <td><input type="number" id="er-add-dx" min="0" max="90" value="90">°</td>
+                    <td><input type="number" id="er-add-sn" min="0" max="90" value="90">°</td>
                     <td><span id="er-add-perc">100%</span></td>
                 </tr>
                 <tr>
                     <td>3. IR in posizione ABER (0-90)</td>
-                    <td><input type="number" id="ir-aber-dx" min="0" max="90" value="90"></td>
-                    <td><input type="number" id="ir-aber-sn" min="0" max="90" value="90"></td>
+                    <td><input type="number" id="ir-aber-dx" min="0" max="90" value="90">°</td>
+                    <td><input type="number" id="ir-aber-sn" min="0" max="90" value="90">°</td>
                     <td><span id="ir-aber-perc">100%</span></td>
                 </tr>
                 <tr>
                     <td>4. ER in posizione ABER (0-90)</td>
-                    <td><input type="number" id="er-aber-dx" min="0" max="90" value="90"></td>
-                    <td><input type="number" id="er-aber-sn" min="0" max="90" value="90"></td>
+                    <td><input type="number" id="er-aber-dx" min="0" max="90" value="90">°</td>
+                    <td><input type="number" id="er-aber-sn" min="0" max="90" value="90">°</td>
                     <td><span id="er-aber-perc">100%</span></td>
                 </tr>
                 <tr>
                     <td>5. EA 0-180</td>
-                    <td><input type="number" id="ea-dx" min="0" max="180" value="180"></td>
-                    <td><input type="number" id="ea-sn" min="0" max="180" value="180"></td>
+                    <td><input type="number" id="ea-dx" min="0" max="180" value="180">°</td>
+                    <td><input type="number" id="ea-sn" min="0" max="180" value="180">°</td>
                     <td><span id="ea-perc">100%</span></td>
                 </tr>
                 <tr>
                     <td>6. ABD 0-180</td>
-                    <td><input type="number" id="abd-dx" min="0" max="180" value="180"></td>
-                    <td><input type="number" id="abd-sn" min="0" max="180" value="180"></td>
+                    <td><input type="number" id="abd-dx" min="0" max="180" value="180">°</td>
+                    <td><input type="number" id="abd-sn" min="0" max="180" value="180">°</td>
                     <td><span id="abd-perc">100%</span></td>
                 </tr>
             </table>
         </div>
-        <div class="question">
-            <label>2. Tendinopatia Calcifica</label>
-            <div class="options">
-                <label class="option"><input type="radio" name="q2" value="0" checked> 0</label>
-                <label class="option"><input type="radio" name="q2" value="20"> 20</label>
-                <label class="option"><input type="radio" name="q2" value="40"> 40</label>
-                <label class="option"><input type="radio" name="q2" value="60"> 60</label>
-                <label class="option"><input type="radio" name="q2" value="80"> 80</label>
-                <label class="option"><input type="radio" name="q2" value="100"> 100</label>
-            </div>
+        <div class="frozen-shoulder">
+            <h3>AROM</h3>
+            <table class="sub-table">
+                <tr>
+                    <th>Metrica</th>
+                    <th>dx</th>
+                    <th>sn</th>
+                    <th>Percentuale</th>
+                </tr>
+                <tr>
+                    <td>1. IR braccio addotto (0-45)</td>
+                    <td><input type="number" id="arom-ir-add-dx" min="0" max="45" value="45">°</td>
+                    <td><input type="number" id="arom-ir-add-sn" min="0" max="45" value="45">°</td>
+                    <td><span id="arom-ir-add-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>2. ER braccio addotto (0-90)</td>
+                    <td><input type="number" id="arom-er-add-dx" min="0" max="90" value="90">°</td>
+                    <td><input type="number" id="arom-er-add-sn" min="0" max="90" value="90">°</td>
+                    <td><span id="arom-er-add-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>3. IR in posizione ABER (0-90)</td>
+                    <td><input type="number" id="arom-ir-aber-dx" min="0" max="90" value="90">°</td>
+                    <td><input type="number" id="arom-ir-aber-sn" min="0" max="90" value="90">°</td>
+                    <td><span id="arom-ir-aber-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>4. ER in posizione ABER (0-90)</td>
+                    <td><input type="number" id="arom-er-aber-dx" min="0" max="90" value="90">°</td>
+                    <td><input type="number" id="arom-er-aber-sn" min="0" max="90" value="90">°</td>
+                    <td><span id="arom-er-aber-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>5. EA 0-180</td>
+                    <td><input type="number" id="arom-ea-dx" min="0" max="180" value="180">°</td>
+                    <td><input type="number" id="arom-ea-sn" min="0" max="180" value="180">°</td>
+                    <td><span id="arom-ea-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>6. ABD 0-180</td>
+                    <td><input type="number" id="arom-abd-dx" min="0" max="180" value="180">°</td>
+                    <td><input type="number" id="arom-abd-sn" min="0" max="180" value="180">°</td>
+                    <td><span id="arom-abd-perc">100%</span></td>
+                </tr>
+            </table>
         </div>
         <div class="question">
-            <label>3. Lesione Cuffia</label>
-            <div class="options">
-                <label class="option"><input type="radio" name="q3" value="0" checked> 0</label>
-                <label class="option"><input type="radio" name="q3" value="20"> 20</label>
-                <label class="option"><input type="radio" name="q3" value="40"> 40</label>
-                <label class="option"><input type="radio" name="q3" value="60"> 60</label>
-                <label class="option"><input type="radio" name="q3" value="80"> 80</label>
-                <label class="option"><input type="radio" name="q3" value="100"> 100</label>
+            <div class="lesione-cuffia">
+                <h3>Test di Forza</h3>
+                <table class="sub-table">
+                    <tr>
+                        <th>Metrica</th>
+                        <th>dx</th>
+                        <th>sn</th>
+                        <th>Percentage</th>
+                    </tr>
+                    <tr>
+                        <td>IR braccio addotto</td>
+                        <td><input type="number" id="lc-ir-add-dx" min="0" max="40" value="0"> kg</td>
+                        <td><input type="number" id="lc-ir-add-sn" min="0" max="40" value="0"> kg</td>
+                        <td><span id="lc-ir-add-perc">0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>ER braccio addotto</td>
+                        <td><input type="number" id="lc-er-add-dx" min="0" max="40" value="0"> kg</td>
+                        <td><input type="number" id="lc-er-add-sn" min="0" max="40" value="0"> kg</td>
+                        <td><span id="lc-er-add-perc">0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>IR in posizione ABER</td>
+                        <td><input type="number" id="lc-ir-aber-dx" min="0" max="40" value="0"> kg</td>
+                        <td><input type="number" id="lc-ir-aber-sn" min="0" max="40" value="0"> kg</td>
+                        <td><span id="lc-ir-aber-perc">0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>ER in posizione ABER</td>
+                        <td><input type="number" id="lc-er-aber-dx" min="0" max="40" value="0"> kg</td>
+                        <td><input type="number" id="lc-er-aber-sn" min="0" max="40" value="0"> kg</td>
+                        <td><span id="lc-er-aber-perc">0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>EA a 90 gradi</td>
+                        <td><input type="number" id="lc-ea-dx" min="0" max="40" value="0"> kg</td>
+                        <td><input type="number" id="lc-ea-sn" min="0" max="40" value="0"> kg</td>
+                        <td><span id="lc-ea-perc">0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>ABD a 90 gradi</td>
+                        <td><input type="number" id="lc-abd-dx" min="0" max="40" value="0"> kg</td>
+                        <td><input type="number" id="lc-abd-sn" min="0" max="40" value="0"> kg</td>
+                        <td><span id="lc-abd-perc">0%</span></td>
+                    </tr>
+                </table>
             </div>
         </div>
-        <div class="question">
-            <label>4. Appresione</label>
-            <div class="options">
-                <label class="option"><input type="radio" name="q4" value="0" checked> 0</label>
-                <label class="option"><input type="radio" name="q4" value="20"> 20</label>
-                <label class="option"><input type="radio" name="q4" value="40"> 40</label>
-                <label class="option"><input type="radio" name="q4" value="60"> 60</label>
-                <label class="option"><input type="radio" name="q4" value="80"> 80</label>
-                <label class="option"><input type="radio" name="q4" value="100"> 100</label>
-            </div>
-        </div>
-        <div class="question">
-            <label>5. Interdipendenza Regionale</label>
-            <div class="options">
-                <label class="option"><input type="radio" name="q5" value="0" checked> 0</label>
-                <label class="option"><input type="radio" name="q5" value="20"> 20</label>
-                <label class="option"><input type="radio" name="q5" value="40"> 40</label>
-                <label class="option"><input type="radio" name="q5" value="60"> 60</label>
-                <label class="option"><input type="radio" name="q5" value="80"> 80</label>
-                <label class="option"><input type="radio" name="q5" value="100"> 100</label>
-            </div>
+        <div class="frozen-shoulder">
+            <h3>Test Accurati</h3>
+            <table class="sub-table">
+                <tr>
+                    <th>Test</th>
+                    <th>dx</th>
+                    <th>sn</th>
+                </tr>
+                <tr>
+                    <td>Apprensione</td>
+                    <td><select id="ta-apprensione-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-apprensione-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>Dynamic relocation test</td>
+                    <td><select id="ta-dynamic-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-dynamic-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>Jerk test</td>
+                    <td><select id="ta-jerk-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-jerk-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>ERLS</td>
+                    <td><select id="ta-erls-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-erls-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>DROP SIGN</td>
+                    <td><select id="ta-drop-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-drop-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>LIFT OFF</td>
+                    <td><select id="ta-lift-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-lift-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>BELLY PRESS</td>
+                    <td><select id="ta-belly-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-belly-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+                <tr>
+                    <td>MOVIMENTI RIPETUTI CERVICALI</td>
+                    <td><select id="ta-movimenti-dx"><option selected>passed</option><option>not passed</option></select></td>
+                    <td><select id="ta-movimenti-sn"><option selected>passed</option><option>not passed</option></select></td>
+                </tr>
+            </table>
         </div>
     </div>
     <div class="chart">
