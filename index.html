@@ -7,7 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 20px;
             display: flex;
             justify-content: space-between;
             padding: 20px;
@@ -15,11 +16,49 @@
         .questions {
             width: 45%;
         }
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .frozen-shoulder {
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .frozen-shoulder h3 {
+            margin-top: 0;
+        }
+        #marker {
+            color: red;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .sub-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .sub-table th, .sub-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        .sub-table td:first-child {
+            text-align: left;
+        }
+        .sub-table th {
+            background-color: #f0f0f0;
+        }
+        .sub-table input {
+            width: 60px;
+        }
         .chart {
             width: 45%;
         }
         .question {
             margin-bottom: 20px;
+        }
+        .question label {
+            font-weight: bold;
         }
         .options {
             display: flex;
@@ -33,60 +72,96 @@
 </head>
 <body>
     <div class="questions">
-        <h2>Rate the following (0-5):</h2>
+        <h2>Progetto Rivoluzione Spalla:</h2>
+        <div class="frozen-shoulder">
+            <h3>Frozen Shoulder<span id="marker"></span></h3>
+            <table class="sub-table">
+                <tr>
+                    <th>Metrica</th>
+                    <th>dx</th>
+                    <th>sn</th>
+                    <th>Percentuale</th>
+                </tr>
+                <tr>
+                    <td>1. IR braccio addotto (0-45)</td>
+                    <td><input type="number" id="ir-add-dx" min="0" max="45" value="45"></td>
+                    <td><input type="number" id="ir-add-sn" min="0" max="45" value="45"></td>
+                    <td><span id="ir-add-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>2. ER braccio addotto (0-90)</td>
+                    <td><input type="number" id="er-add-dx" min="0" max="90" value="90"></td>
+                    <td><input type="number" id="er-add-sn" min="0" max="90" value="90"></td>
+                    <td><span id="er-add-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>3. IR in posizione ABER (0-90)</td>
+                    <td><input type="number" id="ir-aber-dx" min="0" max="90" value="90"></td>
+                    <td><input type="number" id="ir-aber-sn" min="0" max="90" value="90"></td>
+                    <td><span id="ir-aber-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>4. ER in posizione ABER (0-90)</td>
+                    <td><input type="number" id="er-aber-dx" min="0" max="90" value="90"></td>
+                    <td><input type="number" id="er-aber-sn" min="0" max="90" value="90"></td>
+                    <td><span id="er-aber-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>5. EA 0-180</td>
+                    <td><input type="number" id="ea-dx" min="0" max="180" value="180"></td>
+                    <td><input type="number" id="ea-sn" min="0" max="180" value="180"></td>
+                    <td><span id="ea-perc">100%</span></td>
+                </tr>
+                <tr>
+                    <td>6. ABD 0-180</td>
+                    <td><input type="number" id="abd-dx" min="0" max="180" value="180"></td>
+                    <td><input type="number" id="abd-sn" min="0" max="180" value="180"></td>
+                    <td><span id="abd-perc">100%</span></td>
+                </tr>
+            </table>
+        </div>
         <div class="question">
-            <label>1. How happy are you?</label>
+            <label>2. Tendinopatia Calcifica</label>
             <div class="options">
-                <label class="option"><input type="radio" name="q1" value="0"> 0</label>
-                <label class="option"><input type="radio" name="q1" value="1"> 1</label>
-                <label class="option"><input type="radio" name="q1" value="2"> 2</label>
-                <label class="option"><input type="radio" name="q1" value="3"> 3</label>
-                <label class="option"><input type="radio" name="q1" value="4"> 4</label>
-                <label class="option"><input type="radio" name="q1" value="5"> 5</label>
+                <label class="option"><input type="radio" name="q2" value="0" checked> 0</label>
+                <label class="option"><input type="radio" name="q2" value="20"> 20</label>
+                <label class="option"><input type="radio" name="q2" value="40"> 40</label>
+                <label class="option"><input type="radio" name="q2" value="60"> 60</label>
+                <label class="option"><input type="radio" name="q2" value="80"> 80</label>
+                <label class="option"><input type="radio" name="q2" value="100"> 100</label>
             </div>
         </div>
         <div class="question">
-            <label>2. How healthy do you feel?</label>
+            <label>3. Lesione Cuffia</label>
             <div class="options">
-                <label class="option"><input type="radio" name="q2" value="0"> 0</label>
-                <label class="option"><input type="radio" name="q2" value="1"> 1</label>
-                <label class="option"><input type="radio" name="q2" value="2"> 2</label>
-                <label class="option"><input type="radio" name="q2" value="3"> 3</label>
-                <label class="option"><input type="radio" name="q2" value="4"> 4</label>
-                <label class="option"><input type="radio" name="q2" value="5"> 5</label>
+                <label class="option"><input type="radio" name="q3" value="0" checked> 0</label>
+                <label class="option"><input type="radio" name="q3" value="20"> 20</label>
+                <label class="option"><input type="radio" name="q3" value="40"> 40</label>
+                <label class="option"><input type="radio" name="q3" value="60"> 60</label>
+                <label class="option"><input type="radio" name="q3" value="80"> 80</label>
+                <label class="option"><input type="radio" name="q3" value="100"> 100</label>
             </div>
         </div>
         <div class="question">
-            <label>3. How productive are you?</label>
+            <label>4. Appresione</label>
             <div class="options">
-                <label class="option"><input type="radio" name="q3" value="0"> 0</label>
-                <label class="option"><input type="radio" name="q3" value="1"> 1</label>
-                <label class="option"><input type="radio" name="q3" value="2"> 2</label>
-                <label class="option"><input type="radio" name="q3" value="3"> 3</label>
-                <label class="option"><input type="radio" name="q3" value="4"> 4</label>
-                <label class="option"><input type="radio" name="q3" value="5"> 5</label>
+                <label class="option"><input type="radio" name="q4" value="0" checked> 0</label>
+                <label class="option"><input type="radio" name="q4" value="20"> 20</label>
+                <label class="option"><input type="radio" name="q4" value="40"> 40</label>
+                <label class="option"><input type="radio" name="q4" value="60"> 60</label>
+                <label class="option"><input type="radio" name="q4" value="80"> 80</label>
+                <label class="option"><input type="radio" name="q4" value="100"> 100</label>
             </div>
         </div>
         <div class="question">
-            <label>4. How social are you?</label>
+            <label>5. Interdipendenza Regionale</label>
             <div class="options">
-                <label class="option"><input type="radio" name="q4" value="0"> 0</label>
-                <label class="option"><input type="radio" name="q4" value="1"> 1</label>
-                <label class="option"><input type="radio" name="q4" value="2"> 2</label>
-                <label class="option"><input type="radio" name="q4" value="3"> 3</label>
-                <label class="option"><input type="radio" name="q4" value="4"> 4</label>
-                <label class="option"><input type="radio" name="q4" value="5"> 5</label>
-            </div>
-        </div>
-        <div class="question">
-            <label>5. How stressed are you?</label>
-            <div class="options">
-                <label class="option"><input type="radio" name="q5" value="0"> 0</label>
-                <label class="option"><input type="radio" name="q5" value="1"> 1</label>
-                <label class="option"><input type="radio" name="q5" value="2"> 2</label>
-                <label class="option"><input type="radio" name="q5" value="3"> 3</label>
-                <label class="option"><input type="radio" name="q5" value="4"> 4</label>
-                <label class="option"><input type="radio" name="q5" value="5"> 5</label>
+                <label class="option"><input type="radio" name="q5" value="0" checked> 0</label>
+                <label class="option"><input type="radio" name="q5" value="20"> 20</label>
+                <label class="option"><input type="radio" name="q5" value="40"> 40</label>
+                <label class="option"><input type="radio" name="q5" value="60"> 60</label>
+                <label class="option"><input type="radio" name="q5" value="80"> 80</label>
+                <label class="option"><input type="radio" name="q5" value="100"> 100</label>
             </div>
         </div>
     </div>
