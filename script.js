@@ -19,13 +19,15 @@ const config = {
     type: 'radar',
     data: data,
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             r: {
                 beginAtZero: true,
                 max: 100,
                 pointLabels: {
                     font: {
-                        size: 18
+                        size: 14
                     }
                 }
             }

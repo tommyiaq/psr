@@ -53,6 +53,24 @@
         }
         .chart {
             width: 45%;
+            height: 550px;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .questions, .chart {
+                width: 100%;
+            }
+            .chart {
+                height: 400px;
+            }
+            .sub-table {
+                font-size: 14px;
+            }
+            .sub-table th, .sub-table td {
+                padding: 4px;
+            }
         }
         .question {
             margin-bottom: 20px;
