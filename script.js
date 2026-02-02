@@ -77,14 +77,46 @@ function updateChart() {
         lc_percs.push(perc);
     });
 
-    // Same calculation for Lesione Cuffia
-    const lc_others = lc_percs.filter((_, i) => i !== 1).sort((a,b) => b - a);
-    const lc_capped1 = Math.min(lc_others[0], 25);
-    const lc_capped2 = Math.min(lc_others[1], 25);
-    const lc_sumTwo = lc_capped1 + lc_capped2;
-    const lc_er = Math.min(lc_percs[1], 50);
-    const lc_total = lc_sumTwo + lc_er;
-    const lc_segment = Math.min(lc_total, 100);
+    // Calculate Lesione Cuffia influence from Test di Forza
+    const lc_avg = lc_percs.reduce((a, b) => a + b, 0) / lc_percs.length;
+    let lc_value = 0;
+    if (lc_avg > 10) {
+        if (lc_avg >= 50) {
+            lc_value = 90;
+        } else {
+            lc_value = (lc_avg - 10) / 40 * 90;
+        }
+    }
+    
+    // Add 5% if AROM EA or ABD (dx or sn) < 90°
+    const arom_ea_dx = parseFloat(document.getElementById('arom-ea-dx').value) || 0;
+    const arom_ea_sn = parseFloat(document.getElementById('arom-ea-sn').value) || 0;
+    const arom_abd_dx = parseFloat(document.getElementById('arom-abd-dx').value) || 0;
+    const arom_abd_sn = parseFloat(document.getElementById('arom-abd-sn').value) || 0;
+    if (arom_ea_dx < 90 || arom_ea_sn < 90 || arom_abd_dx < 90 || arom_abd_sn < 90) {
+        lc_value += 4;
+    }
+    
+    // Add 4% if PROM EA or ABD (dx or sn) > 130°
+    const prom_ea_dx = parseFloat(document.getElementById('ea-dx').value) || 0;
+    const prom_ea_sn = parseFloat(document.getElementById('ea-sn').value) || 0;
+    const prom_abd_dx = parseFloat(document.getElementById('abd-dx').value) || 0;
+    const prom_abd_sn = parseFloat(document.getElementById('abd-sn').value) || 0;
+    if (prom_ea_dx > 130 || prom_ea_sn > 130 || prom_abd_dx > 130 || prom_abd_sn > 130) {
+        lc_value += 4;
+    }
+    
+    // Add 2% if any Test Accurati is "not passed"
+    const ta_ids = ['ta-apprensione-dx', 'ta-apprensione-sn', 'ta-dynamic-dx', 'ta-dynamic-sn', 
+                    'ta-jerk-dx', 'ta-jerk-sn', 'ta-erls-dx', 'ta-erls-sn', 
+                    'ta-drop-dx', 'ta-drop-sn', 'ta-lift-dx', 'ta-lift-sn', 
+                    'ta-belly-dx', 'ta-belly-sn', 'ta-movimenti-dx', 'ta-movimenti-sn'];
+    const anyFailed = ta_ids.some(id => document.getElementById(id).value === 'not passed');
+    if (anyFailed) {
+        lc_value += 2;
+    }
+    
+    const lc_segment = Math.max(Math.round(lc_value), 5);
 
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
@@ -112,7 +144,7 @@ function updateChart() {
     data.datasets[0].data = [
         Math.max(Math.round(segment), 5),
         5,
-        5,
+        Math.max(Math.round(lc_value), 5),
         5,
         5
     ];
@@ -131,6 +163,10 @@ document.querySelectorAll('.frozen-shoulder input, .frozen-shoulder select').for
 
 document.querySelectorAll('.lesione-cuffia input').forEach(input => {
     input.addEventListener('input', updateChart);
+});
+
+document.querySelectorAll('.frozen-shoulder select').forEach(select => {
+    select.addEventListener('change', updateChart);
 });
 
 updateChart();
