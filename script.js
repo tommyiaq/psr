@@ -112,6 +112,28 @@ function updateChart() {
     lc_segment_value = Math.min(lc_segment_value, 100);
     const lc_segment = Math.max(Math.round(lc_segment_value), 5);
 
+    // Calculate Appresione
+    const apprensione_positive = ['ta-apprensione-dx', 'ta-apprensione-sn'].some(id => document.getElementById(id).value === 'not passed');
+    const dynamic_positive = ['ta-dynamic-dx', 'ta-dynamic-sn'].some(id => document.getElementById(id).value === 'not passed');
+    let apprensione_value = 0;
+    if (apprensione_positive) {
+        apprensione_value = 100;
+    } else if (dynamic_positive) {
+        apprensione_value = 50;
+    }
+    apprensione_value = Math.max(apprensione_value, 5);
+
+    // Calculate Interdipendenza Regionale
+    const ulnt1_positive = ['ta-ulnt1-dx', 'ta-ulnt1-sn'].some(id => document.getElementById(id).value === 'not passed');
+    const movimenti_positive = ['ta-movimenti-dx', 'ta-movimenti-sn'].some(id => document.getElementById(id).value === 'not passed');
+    let interd_value = 0;
+    if (ulnt1_positive) {
+        interd_value = 100;
+    } else if (movimenti_positive) {
+        interd_value = 50;
+    }
+    interd_value = Math.max(interd_value, 5);
+
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
     const arom_ranges = [45, 90, 90, 90, 180, 180];
@@ -139,8 +161,8 @@ function updateChart() {
         Math.max(Math.round(segment), 5),
         5,
         lc_segment,
-        5,
-        5
+        apprensione_value,
+        interd_value
     ];
 
     // Change point color to red if that value is 100
@@ -148,9 +170,19 @@ function updateChart() {
         if (i === 2) {
             return (prom_condition && arom_condition && test_condition) ? 'red' : 'blue';
         }
+        if (i === 3) {
+            return apprensione_positive ? 'red' : 'blue';
+        }
+        if (i === 4) {
+            return ulnt1_positive ? 'red' : 'blue';
+        }
         return val === 100 ? 'red' : 'blue';
     });
-    data.datasets[0].pointRadius = data.datasets[0].data.map(val => val === 100 ? 6 : 3);
+    data.datasets[0].pointRadius = data.datasets[0].data.map((val, i) => {
+        if (i === 3 && apprensione_positive) return 6;
+        if (i === 4 && ulnt1_positive) return 6;
+        return val === 100 ? 6 : 3;
+    });
 
     radarChart.update();
 }
