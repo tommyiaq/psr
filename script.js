@@ -46,7 +46,7 @@ function updateChart() {
         const dx = parseFloat(document.getElementById(id + '-dx').value) || 0;
         const sn = parseFloat(document.getElementById(id + '-sn').value) || 0;
         const diff = Math.abs(dx - sn);
-        const maxVal = Math.max(dx, sn, ranges[i]); // use the range max if both 0
+        const maxVal = Math.max(dx, sn) || ranges[i];
         const perc = maxVal > 0 ? (diff / maxVal) * 100 : 0;
         document.getElementById(id + '-perc').textContent = Math.round(perc) + '%';
         percs.push(perc);
@@ -68,10 +68,10 @@ function updateChart() {
     const lc_ranges = [40, 40, 40, 40, 40, 40];
     let lc_percs = [];
     lc_ids.forEach((id, i) => {
-        const dx = parseFloat(document.getElementById(id + '-dx').value) || 0;
-        const sn = parseFloat(document.getElementById(id + '-sn').value) || 0;
+        const dx = parseFloat(document.getElementById(id + '-dx').value) || 1;
+        const sn = parseFloat(document.getElementById(id + '-sn').value) || 1;
         const diff = Math.abs(dx - sn);
-        const maxVal = Math.max(dx, sn, lc_ranges[i]);
+        const maxVal = Math.max(dx, sn) || lc_ranges[i];
         const perc = maxVal > 0 ? (diff / maxVal) * 100 : 0;
         document.getElementById(id + '-perc').textContent = Math.round(perc) + '%';
         lc_percs.push(perc);
@@ -87,36 +87,30 @@ function updateChart() {
             lc_value = (lc_avg - 10) / 40 * 90;
         }
     }
-    
-    // Add 5% if AROM EA or ABD (dx or sn) < 90°
-    const arom_ea_dx = parseFloat(document.getElementById('arom-ea-dx').value) || 0;
-    const arom_ea_sn = parseFloat(document.getElementById('arom-ea-sn').value) || 0;
-    const arom_abd_dx = parseFloat(document.getElementById('arom-abd-dx').value) || 0;
-    const arom_abd_sn = parseFloat(document.getElementById('arom-abd-sn').value) || 0;
-    if (arom_ea_dx < 90 || arom_ea_sn < 90 || arom_abd_dx < 90 || arom_abd_sn < 90) {
-        lc_value += 4;
-    }
-    
-    // Add 4% if PROM EA or ABD (dx or sn) > 130°
+
     const prom_ea_dx = parseFloat(document.getElementById('ea-dx').value) || 0;
     const prom_ea_sn = parseFloat(document.getElementById('ea-sn').value) || 0;
     const prom_abd_dx = parseFloat(document.getElementById('abd-dx').value) || 0;
     const prom_abd_sn = parseFloat(document.getElementById('abd-sn').value) || 0;
-    if (prom_ea_dx > 130 || prom_ea_sn > 130 || prom_abd_dx > 130 || prom_abd_sn > 130) {
-        lc_value += 4;
-    }
-    
-    // Add 2% if any Test Accurati is "not passed"
-    const ta_ids = ['ta-apprensione-dx', 'ta-apprensione-sn', 'ta-dynamic-dx', 'ta-dynamic-sn', 
-                    'ta-jerk-dx', 'ta-jerk-sn', 'ta-erls-dx', 'ta-erls-sn', 
-                    'ta-drop-dx', 'ta-drop-sn', 'ta-lift-dx', 'ta-lift-sn', 
-                    'ta-belly-dx', 'ta-belly-sn', 'ta-movimenti-dx', 'ta-movimenti-sn'];
-    const anyFailed = ta_ids.some(id => document.getElementById(id).value === 'not passed');
-    if (anyFailed) {
-        lc_value += 2;
-    }
-    
-    const lc_segment = Math.max(Math.round(lc_value), 5);
+    const arom_ea_dx = parseFloat(document.getElementById('arom-ea-dx').value) || 0;
+    const arom_ea_sn = parseFloat(document.getElementById('arom-ea-sn').value) || 0;
+    const arom_abd_dx = parseFloat(document.getElementById('arom-abd-dx').value) || 0;
+    const arom_abd_sn = parseFloat(document.getElementById('arom-abd-sn').value) || 0;
+    const test_ids = ['ta-erls-dx', 'ta-erls-sn', 'ta-drop-dx', 'ta-drop-sn', 'ta-belly-dx', 'ta-belly-sn', 'ta-lift-dx', 'ta-lift-sn'];
+    const test_condition = test_ids.some(id => document.getElementById(id).value === 'not passed');
+    const prom_condition = prom_ea_dx >= 120 && prom_ea_sn >= 120 && prom_abd_dx >= 120 && prom_abd_sn >= 120;
+    const prom_level = prom_condition ? 1 : 0;
+    const min_arom_ea = Math.min(arom_ea_dx, arom_ea_sn);
+    const min_arom_abd = Math.min(arom_abd_dx, arom_abd_sn);
+    const ea_contrib = Math.min(49, 49 * (180 - min_arom_ea) / 90);
+    const abd_contrib = Math.min(49, 49 * (180 - min_arom_abd) / 90);
+    const arom_condition = ea_contrib > 0 && abd_contrib > 0;
+    const arom_add = (ea_contrib + abd_contrib) * prom_level;
+    let lc_segment_value = lc_value;
+    if (prom_condition) lc_segment_value += arom_add;
+    if (test_condition) lc_segment_value += 2;
+    lc_segment_value = Math.min(lc_segment_value, 100);
+    const lc_segment = Math.max(Math.round(lc_segment_value), 5);
 
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
@@ -126,7 +120,7 @@ function updateChart() {
         const dx = parseFloat(document.getElementById(id + '-dx').value) || 0;
         const sn = parseFloat(document.getElementById(id + '-sn').value) || 0;
         const diff = Math.abs(dx - sn);
-        const maxVal = Math.max(dx, sn, arom_ranges[i]);
+        const maxVal = Math.max(dx, sn) || arom_ranges[i];
         const perc = maxVal > 0 ? (diff / maxVal) * 100 : 0;
         document.getElementById(id + '-perc').textContent = Math.round(perc) + '%';
         arom_percs.push(perc);
@@ -144,13 +138,18 @@ function updateChart() {
     data.datasets[0].data = [
         Math.max(Math.round(segment), 5),
         5,
-        Math.max(Math.round(lc_value), 5),
+        lc_segment,
         5,
         5
     ];
 
     // Change point color to red if that value is 100
-    data.datasets[0].pointBackgroundColor = data.datasets[0].data.map(val => val === 100 ? 'red' : 'blue');
+    data.datasets[0].pointBackgroundColor = data.datasets[0].data.map((val, i) => {
+        if (i === 2) {
+            return (prom_condition && arom_condition && test_condition) ? 'red' : 'blue';
+        }
+        return val === 100 ? 'red' : 'blue';
+    });
     data.datasets[0].pointRadius = data.datasets[0].data.map(val => val === 100 ? 6 : 3);
 
     radarChart.update();
