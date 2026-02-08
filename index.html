@@ -10,31 +10,40 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 20px;
             display: flex;
+            flex-direction: column;
             gap: 0;
-            padding: 10px;
+            padding: 5px;
+            height: 100vh;
         }
         .questions {
-            flex: 0 0 40%;
+            height: calc(100vh - 355px);
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
         }
         h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 10px;
         }
         .frozen-shoulder {
             border: 2px solid #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
+            padding: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
         .frozen-shoulder h3 {
             margin-top: 0;
+            font-size: 16px;
         }
         .lesione-cuffia {
             border: 2px solid #ccc;
             padding: 10px;
-            margin-bottom: 20px;
-        }
+            margin-bottom: 20px;            font-size: 14px;        }
         .lesione-cuffia h3 {
             margin-top: 0;
+            font-size: 16px;
         }
         #marker {
             color: red;
@@ -47,7 +56,7 @@
         }
         .sub-table th, .sub-table td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 4px;
             text-align: center;
         }
         .sub-table td:first-child {
@@ -57,27 +66,30 @@
             background-color: #f0f0f0;
         }
         .sub-table input {
-            width: 60px;
+            width: 50px;
         }
         .chart {
-            flex: 1;
-            height: 550px;
+            height: 350px;
+            width: 100%;
+        }
+        #resizer {
+            height: 5px;
+            background: #ccc;
+            cursor: ns-resize;
         }
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .questions, .chart {
-                width: 100%;
+            .questions {
+                height: calc(100vh - 355px);
+                grid-template-columns: 1fr;
             }
             .chart {
-                height: 400px;
+                height: 350px;
             }
             .sub-table {
-                font-size: 14px;
+                font-size: 12px;
             }
             .sub-table th, .sub-table td {
-                padding: 4px;
+                padding: 2px;
             }
         }
         .question {
@@ -97,15 +109,18 @@
     </style>
 </head>
 <body>
+    <div class="chart">
+        <canvas id="radarChart"></canvas>
+    </div>
+    <div id="resizer"></div>
     <div class="questions">
-        <h2>Progetto Rivoluzione Spalla:</h2>
         <div class="frozen-shoulder">
             <h3>PROM<span id="marker"></span></h3>
             <table class="sub-table">
                 <tr>
                     <th>Metrica</th>
-                    <th>dx</th>
-                    <th>sn</th>
+                    <th>sana</th>
+                    <th>malata</th>
                     <th>Percentuale</th>
                 </tr>
                 <tr>
@@ -297,9 +312,6 @@
                 </tr>
             </table>
         </div>
-    </div>
-    <div class="chart">
-        <canvas id="radarChart"></canvas>
     </div>
     <script src="script.js"></script>
 </body>

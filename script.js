@@ -21,6 +21,11 @@ const config = {
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
         scales: {
             r: {
                 beginAtZero: true,
@@ -78,13 +83,14 @@ function updateChart() {
     });
 
     // Calculate Lesione Cuffia influence from Test di Forza
-    const lc_avg = lc_percs.reduce((a, b) => a + b, 0) / lc_percs.length;
+    const sorted_percs = lc_percs.sort((a, b) => b - a);
+    const top2_avg = (sorted_percs[0] + sorted_percs[1]) / 2;
     let lc_value = 0;
-    if (lc_avg > 10) {
-        if (lc_avg >= 50) {
+    if (top2_avg > 10) {
+        if (top2_avg >= 50) {
             lc_value = 90;
         } else {
-            lc_value = (lc_avg - 10) / 40 * 90;
+            lc_value = (top2_avg - 10) / 40 * 90;
         }
     }
 
@@ -198,6 +204,32 @@ document.querySelectorAll('.lesione-cuffia input').forEach(input => {
 
 document.querySelectorAll('.frozen-shoulder select').forEach(select => {
     select.addEventListener('change', updateChart);
+});
+
+// Resizer functionality
+const resizer = document.getElementById('resizer');
+const chart = document.querySelector('.chart');
+const questions = document.querySelector('.questions');
+let isResizing = false;
+
+resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    document.body.style.cursor = 'ns-resize';
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    const newHeight = e.clientY;
+    if (newHeight > 100 && newHeight < window.innerHeight - 100) {
+        chart.style.height = newHeight + 'px';
+        questions.style.height = `calc(100vh - ${newHeight + 5}px)`;
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.cursor = 'default';
 });
 
 updateChart();
