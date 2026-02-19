@@ -144,6 +144,10 @@ function updateChart() {
     const pseq_score = parseFloat(document.getElementById('pseq-score').value) || 0;
     const pseq_value = Math.max(5, 100 - (pseq_score * 95 / 60));
 
+    // Calculate PCS (Pain Catastrophizing Scale)
+    const pcs_score = parseFloat(document.getElementById('pcs-score').value) || 0;
+    const pcs_value = Math.max(5, 5 + (pcs_score * 95 / 52));
+
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
     const arom_ranges = [45, 90, 90, 90, 180, 180];
@@ -173,7 +177,7 @@ function updateChart() {
         Math.max(lc_segment, 5),
         Math.max(apprensione_value, 5),
         Math.max(Math.round(pseq_value), 5),
-        5,
+        Math.max(Math.round(pcs_value), 5),
         5,
         5,
         5,
@@ -191,11 +195,15 @@ function updateChart() {
         if (i === 3) {
             return apprensione_positive ? 'red' : 'blue';
         }
+        if (i === 5) {
+            return pcs_score >= 52 ? 'red' : 'blue';
+        }
         return val === 100 ? 'red' : 'blue';
     });
     data.datasets[0].pointRadius = data.datasets[0].data.map((val, i) => {
         if (i === 1 && ulnt1_positive) return 6;
         if (i === 3 && apprensione_positive) return 6;
+        if (i === 5 && pcs_score >= 52) return 6;
         return val === 100 ? 6 : 3;
     });
 
