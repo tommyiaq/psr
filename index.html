@@ -68,8 +68,8 @@
             <table class="sub-table">
                 <tr>
                     <th>Metrica</th>
-                    <th>dx</th>
-                    <th>sn</th>
+                    <th>sana</th>
+                    <th>malata</th>
                     <th>Percentuale</th>
                 </tr>
                 <tr>
@@ -116,8 +116,8 @@
                 <table class="sub-table">
                     <tr>
                         <th>Metrica</th>
-                        <th>dx</th>
-                        <th>sn</th>
+                        <th>sana</th>
+                        <th>malata</th>
                         <th>Percentage</th>
                     </tr>
                     <tr>
@@ -159,58 +159,61 @@
                 </table>
             </div>
         </div>
+                <div class="frozen-shoulder">
+            <h3>PSEQ (Pain Self-Efficacy Questionnaire)</h3>
+            <table class="sub-table">
+                <tr>
+                    <th>Punteggio (0-60)</th>
+                    <th>Valore</th>
+                </tr>
+                <tr>
+                    <td>PSEQ Score</td>
+                    <td><input type="number" id="pseq-score" min="0" max="60" value="60"></td>
+                </tr>
+            </table>
+        </div>
         <div class="frozen-shoulder">
             <h3>Test Accurati</h3>
             <table class="sub-table">
                 <tr>
                     <th>Test</th>
-                    <th>dx</th>
-                    <th>sn</th>
+                    <th>malata</th>
                 </tr>
                 <tr>
                     <td>Apprensione</td>
                     <td><select id="ta-apprensione-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-apprensione-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>Dynamic relocation test</td>
                     <td><select id="ta-dynamic-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-dynamic-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>Jerk test</td>
                     <td><select id="ta-jerk-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-jerk-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>ERLS</td>
                     <td><select id="ta-erls-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-erls-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>DROP SIGN</td>
                     <td><select id="ta-drop-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-drop-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>LIFT OFF</td>
                     <td><select id="ta-lift-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-lift-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>BELLY PRESS</td>
                     <td><select id="ta-belly-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-belly-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
                     <td>ULNT 1</td>
                     <td><select id="ta-ulnt1-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-ulnt1-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
                 <tr>
-                    <td>MOVIMENTI RIPETUTI CERVICALI</td>
+                    <td>Movimenti ripetuti cervicali</td>
                     <td><select id="ta-movimenti-dx"><option selected>passed</option><option>not passed</option></select></td>
-                    <td><select id="ta-movimenti-sn"><option selected>passed</option><option>not passed</option></select></td>
                 </tr>
             </table>
         </div>

@@ -1,9 +1,9 @@
 const ctx = document.getElementById('radarChart').getContext('2d');
 const data = {
-    labels: ['Frozen shoulder', 'Tend. Calc.', 'Lesione Cuffia', 'Appresione', 'Interd. Reg.'],
+    labels: ['Frozen shoulder', 'Inter. Regionale', 'Lesione di cuffia', 'Apprensione', 'PSEQ', 'PCS', 'TSK13', 'METABOLICA', 'Lifestyle factors', '{variable}'],
     datasets: [{
         label: 'Il tuo punteggio',
-        data: [0, 0, 0, 0, 0],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
@@ -102,7 +102,7 @@ function updateChart() {
     const arom_ea_sn = parseFloat(document.getElementById('arom-ea-sn').value) || 0;
     const arom_abd_dx = parseFloat(document.getElementById('arom-abd-dx').value) || 0;
     const arom_abd_sn = parseFloat(document.getElementById('arom-abd-sn').value) || 0;
-    const test_ids = ['ta-erls-dx', 'ta-erls-sn', 'ta-drop-dx', 'ta-drop-sn', 'ta-belly-dx', 'ta-belly-sn', 'ta-lift-dx', 'ta-lift-sn'];
+    const test_ids = ['ta-erls-dx', 'ta-drop-dx', 'ta-belly-dx', 'ta-lift-dx'];
     const test_condition = test_ids.some(id => document.getElementById(id).value === 'not passed');
     const prom_condition = prom_ea_dx >= 120 && prom_ea_sn >= 120 && prom_abd_dx >= 120 && prom_abd_sn >= 120;
     const prom_level = prom_condition ? 1 : 0;
@@ -119,8 +119,8 @@ function updateChart() {
     const lc_segment = Math.max(Math.round(lc_segment_value), 5);
 
     // Calculate Appresione
-    const apprensione_positive = ['ta-apprensione-dx', 'ta-apprensione-sn'].some(id => document.getElementById(id).value === 'not passed');
-    const dynamic_positive = ['ta-dynamic-dx', 'ta-dynamic-sn'].some(id => document.getElementById(id).value === 'not passed');
+    const apprensione_positive = ['ta-apprensione-dx'].some(id => document.getElementById(id).value === 'not passed');
+    const dynamic_positive = ['ta-dynamic-dx'].some(id => document.getElementById(id).value === 'not passed');
     let apprensione_value = 0;
     if (apprensione_positive) {
         apprensione_value = 100;
@@ -130,8 +130,8 @@ function updateChart() {
     apprensione_value = Math.max(apprensione_value, 5);
 
     // Calculate Interdipendenza Regionale
-    const ulnt1_positive = ['ta-ulnt1-dx', 'ta-ulnt1-sn'].some(id => document.getElementById(id).value === 'not passed');
-    const movimenti_positive = ['ta-movimenti-dx', 'ta-movimenti-sn'].some(id => document.getElementById(id).value === 'not passed');
+    const ulnt1_positive = ['ta-ulnt1-dx'].some(id => document.getElementById(id).value === 'not passed');
+    const movimenti_positive = ['ta-movimenti-dx'].some(id => document.getElementById(id).value === 'not passed');
     let interd_value = 0;
     if (ulnt1_positive) {
         interd_value = 100;
@@ -139,6 +139,10 @@ function updateChart() {
         interd_value = 50;
     }
     interd_value = Math.max(interd_value, 5);
+
+    // Calculate PSEQ (Pain Self-Efficacy Questionnaire)
+    const pseq_score = parseFloat(document.getElementById('pseq-score').value) || 0;
+    const pseq_value = Math.max(5, 100 - (pseq_score * 95 / 60));
 
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
@@ -165,28 +169,33 @@ function updateChart() {
 
     data.datasets[0].data = [
         Math.max(Math.round(segment), 5),
+        Math.max(interd_value, 5),
+        Math.max(lc_segment, 5),
+        Math.max(apprensione_value, 5),
+        Math.max(Math.round(pseq_value), 5),
         5,
-        lc_segment,
-        apprensione_value,
-        interd_value
+        5,
+        5,
+        5,
+        5
     ];
 
     // Change point color to red if that value is 100
     data.datasets[0].pointBackgroundColor = data.datasets[0].data.map((val, i) => {
+        if (i === 1) {
+            return ulnt1_positive ? 'red' : 'blue';
+        }
         if (i === 2) {
             return (prom_condition && arom_condition && test_condition) ? 'red' : 'blue';
         }
         if (i === 3) {
             return apprensione_positive ? 'red' : 'blue';
         }
-        if (i === 4) {
-            return ulnt1_positive ? 'red' : 'blue';
-        }
         return val === 100 ? 'red' : 'blue';
     });
     data.datasets[0].pointRadius = data.datasets[0].data.map((val, i) => {
+        if (i === 1 && ulnt1_positive) return 6;
         if (i === 3 && apprensione_positive) return 6;
-        if (i === 4 && ulnt1_positive) return 6;
         return val === 100 ? 6 : 3;
     });
 
