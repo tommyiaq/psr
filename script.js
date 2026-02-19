@@ -1,6 +1,6 @@
 const ctx = document.getElementById('radarChart').getContext('2d');
 const data = {
-    labels: ['Frozen shoulder', 'Inter. Regionale', 'Lesione di cuffia', 'Apprensione', 'PSEQ', 'PCS', 'TSK13', 'METABOLICA', 'Lifestyle factors', '{variable}'],
+    labels: ['Frozen shoulder', 'Inter. Regionale', 'Lesione di cuffia', 'Apprensione', 'PSEQ', 'PCS', 'TSK13', 'Metabolica', 'Lifestyle factors', '{variable}'],
     datasets: [{
         label: 'Il tuo punteggio',
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -152,6 +152,11 @@ function updateChart() {
     const tsk_score = parseFloat(document.getElementById('tsk-score').value) || 13;
     const tsk_value = Math.max(5, 5 + ((tsk_score - 13) * 95 / 39));
 
+    // Calculate METABOLICA
+    const meta_conditions = ['meta-diabete', 'meta-tiroide', 'meta-reumatica', 'meta-cardiovascolare', 'meta-osteoporosi'];
+    const meta_count = meta_conditions.filter(id => document.getElementById(id).checked).length;
+    const meta_value = Math.max(5, 5 + (meta_count * 95 / 5));
+
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
     const arom_ranges = [45, 90, 90, 90, 180, 180];
@@ -183,7 +188,7 @@ function updateChart() {
         Math.max(Math.round(pseq_value), 5),
         Math.max(Math.round(pcs_value), 5),
         Math.max(Math.round(tsk_value), 5),
-        5,
+        Math.max(Math.round(meta_value), 5),
         5,
         5
     ];
@@ -205,6 +210,9 @@ function updateChart() {
         if (i === 6) {
             return tsk_score >= 52 ? 'red' : 'blue';
         }
+        if (i === 7) {
+            return meta_count >= 5 ? 'red' : 'blue';
+        }
         return val === 100 ? 'red' : 'blue';
     });
     data.datasets[0].pointRadius = data.datasets[0].data.map((val, i) => {
@@ -212,6 +220,7 @@ function updateChart() {
         if (i === 3 && apprensione_positive) return 6;
         if (i === 5 && pcs_score >= 52) return 6;
         if (i === 6 && tsk_score >= 52) return 6;
+        if (i === 7 && meta_count >= 5) return 6;
         return val === 100 ? 6 : 3;
     });
 
