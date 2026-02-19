@@ -157,6 +157,11 @@ function updateChart() {
     const meta_count = meta_conditions.filter(id => document.getElementById(id).checked).length;
     const meta_value = Math.max(5, 5 + (meta_count * 95 / 5));
 
+    // Calculate Lifestyle factors
+    const lifestyle_factors = ['lifestyle-bmi', 'lifestyle-insonnia', 'lifestyle-stress', 'lifestyle-sedentarieta'];
+    const lifestyle_count = lifestyle_factors.filter(id => document.getElementById(id).checked).length;
+    const lifestyle_value = Math.max(5, 5 + (lifestyle_count * 95 / 4));
+
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
     const arom_ranges = [45, 90, 90, 90, 180, 180];
@@ -189,7 +194,7 @@ function updateChart() {
         Math.max(Math.round(pcs_value), 5),
         Math.max(Math.round(tsk_value), 5),
         Math.max(Math.round(meta_value), 5),
-        5,
+        Math.max(Math.round(lifestyle_value), 5),
         5
     ];
 
@@ -213,6 +218,9 @@ function updateChart() {
         if (i === 7) {
             return meta_count >= 5 ? 'red' : 'blue';
         }
+        if (i === 8) {
+            return lifestyle_count >= 4 ? 'red' : 'blue';
+        }
         return val === 100 ? 'red' : 'blue';
     });
     data.datasets[0].pointRadius = data.datasets[0].data.map((val, i) => {
@@ -221,6 +229,7 @@ function updateChart() {
         if (i === 5 && pcs_score >= 52) return 6;
         if (i === 6 && tsk_score >= 52) return 6;
         if (i === 7 && meta_count >= 5) return 6;
+        if (i === 8 && lifestyle_count >= 4) return 6;
         return val === 100 ? 6 : 3;
     });
 
