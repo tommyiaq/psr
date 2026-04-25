@@ -15,6 +15,12 @@
         <canvas id="radarChart"></canvas>
     </div>
     <div id="resizer"></div>
+    <div class="toolbar">
+        <input type="text" id="patient-name" placeholder="Nome paziente">
+        <button onclick="downloadState()">&#8659; Download</button>
+        <input type="file" id="upload-input" accept=".json" style="display:none" onchange="uploadState(this.files[0]); this.value=''">
+        <button onclick="document.getElementById('upload-input').click()">&#8657; Upload</button>
+    </div>
     <div class="questions">
         <div class="frozen-shoulder">
             <h3>PROM<span id="marker"></span></h3>

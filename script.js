@@ -310,4 +310,53 @@ document.getElementById('outcome-slider').addEventListener('input', function () 
     updateChart();
 });
 
+function downloadState() {
+    const state = {};
+    document.querySelectorAll('input[id], select[id]').forEach(el => {
+        if (el.id === 'upload-input' || el.type === 'radio') return;
+        state[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    state._outcome = { selected: selectedOutcome, sliderPos: outcomeSliderPos };
+    state._date = new Date().toISOString().slice(0, 10);
+    const name = document.getElementById('patient-name').value.trim() || 'paziente';
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name}_${state._date}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function uploadState(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const state = JSON.parse(e.target.result);
+        Object.entries(state).forEach(([id, value]) => {
+            if (id.startsWith('_')) return;
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.type === 'checkbox') el.checked = value;
+            else el.value = value;
+        });
+        const outcome = state._outcome || {};
+        selectedOutcome = outcome.selected || null;
+        outcomeSliderPos = outcome.sliderPos || 0;
+        if (selectedOutcome) {
+            const scale = outcomeScales[selectedOutcome];
+            const radio = document.querySelector(`input[name="outcome-score"][value="${selectedOutcome}"]`);
+            const slider = document.getElementById('outcome-slider');
+            if (radio) radio.checked = true;
+            slider.max = scale.max;
+            slider.value = outcomeSliderPos;
+            slider.disabled = false;
+            const displayScore = scale.inverted ? (scale.max - outcomeSliderPos) : outcomeSliderPos;
+            document.getElementById('outcome-score-display').textContent = displayScore;
+        }
+        updateChart();
+    };
+    reader.readAsText(file);
+}
+
 updateChart();
