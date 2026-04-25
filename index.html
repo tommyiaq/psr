@@ -239,6 +239,35 @@
             </table>
         </div>
         <div class="frozen-shoulder">
+            <h3>Outcome Score</h3>
+            <table class="sub-table outcome-radio-table">
+                <tr>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="dash"> DASH</label></td>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="quickdash"> QuickDASH</label></td>
+                </tr>
+                <tr>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="ases"> ASES</label></td>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="spadi"> SPADI</label></td>
+                </tr>
+                <tr>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="oss"> OSS</label></td>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="wosi"> WOSI</label></td>
+                </tr>
+                <tr>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="worc"> WORC</label></td>
+                    <td><label class="outcome-radio-label"><input type="radio" name="outcome-score" value="cms"> Constant Murley</label></td>
+                </tr>
+            </table>
+            <div class="outcome-slider-section">
+                <div class="outcome-slider-labels">
+                    <span>Migliore</span>
+                    <span id="outcome-score-display">—</span>
+                    <span>Peggiore</span>
+                </div>
+                <input type="range" id="outcome-slider" min="0" max="100" value="0" disabled>
+            </div>
+        </div>
+        <div class="frozen-shoulder">
             <h3>Test Accurati</h3>
             <table class="sub-table">
                 <tr>

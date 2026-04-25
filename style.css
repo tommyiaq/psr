@@ -100,3 +100,25 @@ h2 {
     display: flex;
     align-items: center;
 }
+.outcome-radio-table td {
+    text-align: left;
+    padding: 4px 8px;
+}
+.outcome-radio-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.outcome-slider-section {
+    margin-top: 10px;
+}
+.outcome-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+.outcome-slider-section input[type="range"] {
+    width: 100%;
+}

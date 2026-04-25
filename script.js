@@ -1,46 +1,51 @@
-const ctx = document.getElementById('radarChart').getContext('2d');
-const data = {
-    labels: ['Frozen shoulder', 'Inter. Regionale', 'Lesione di cuffia', 'Apprensione', 'PSEQ', 'PCS', 'TSK13', 'Metabolica', 'Lifestyle factors', '{variable}'],
-    datasets: [{
-        label: 'Il tuo punteggio',
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        fill: true,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
-    }]
+const outcomeScales = {
+    dash:      { name: 'DASH',           max: 100,  inverted: false },
+    quickdash: { name: 'QuickDASH',      max: 100,  inverted: false },
+    ases:      { name: 'ASES',           max: 100,  inverted: true  },
+    spadi:     { name: 'SPADI',          max: 100,  inverted: false },
+    oss:       { name: 'OSS',            max: 48,   inverted: true  },
+    wosi:      { name: 'WOSI',           max: 2100, inverted: false },
+    worc:      { name: 'WORC',           max: 2100, inverted: false },
+    cms:       { name: 'Constant Murley',max: 100,  inverted: true  },
 };
 
-const config = {
-    type: 'radar',
-    data: data,
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            r: {
-                beginAtZero: true,
-                max: 100,
-                pointLabels: {
-                    font: {
-                        size: 14
-                    }
-                }
-            }
+let selectedOutcome = null;
+let outcomeSliderPos = 0;
+
+const ctx = document.getElementById('radarChart').getContext('2d');
+const chartLabels = ['Frozen shoulder', 'Inter. Regionale', 'Lesione di cuffia', 'Apprensione', 'PSEQ', 'PCS', 'TSK13', 'Metabolica', 'Lifestyle factors', 'None'];
+const chartDataset = {
+    label: 'Il tuo punteggio',
+    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    fill: true,
+    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    borderColor: 'rgba(54, 162, 235, 1)',
+    borderWidth: 1,
+    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
+};
+
+const chartOptions = {
+    animation: { duration: 0 },
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+        r: {
+            beginAtZero: true,
+            max: 100,
+            pointLabels: { font: { size: 14 } }
         }
     }
 };
 
-const radarChart = new Chart(ctx, config);
+let radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: { labels: [...chartLabels], datasets: [chartDataset] },
+    options: chartOptions
+});
 
 function updateChart() {
     // Calculate Frozen Shoulder
@@ -162,6 +167,17 @@ function updateChart() {
     const lifestyle_count = lifestyle_factors.filter(id => document.getElementById(id).checked).length;
     const lifestyle_value = Math.max(5, 5 + (lifestyle_count * 95 / 4));
 
+    // Calculate Outcome Score ({variable} point)
+    let outcome_value = 5;
+    let outcome_is_red = false;
+    chartLabels[9] = 'None';
+    if (selectedOutcome) {
+        const scale = outcomeScales[selectedOutcome];
+        outcome_value = Math.max(5, Math.round((outcomeSliderPos / scale.max) * 100));
+        outcome_is_red = outcomeSliderPos >= scale.max;
+        chartLabels[9] = scale.name;
+    }
+
     // Calculate AROM
     const arom_ids = ['arom-ir-add', 'arom-er-add', 'arom-ir-aber', 'arom-er-aber', 'arom-ea', 'arom-abd'];
     const arom_ranges = [45, 90, 90, 90, 180, 180];
@@ -185,7 +201,7 @@ function updateChart() {
     const arom_total = arom_sumTwo + arom_er;
     const arom_segment = Math.min(arom_total, 100);
 
-    data.datasets[0].data = [
+    chartDataset.data = [
         Math.max(Math.round(segment), 5),
         Math.max(interd_value, 5),
         Math.max(lc_segment, 5),
@@ -195,45 +211,41 @@ function updateChart() {
         Math.max(Math.round(tsk_value), 5),
         Math.max(Math.round(meta_value), 5),
         Math.max(Math.round(lifestyle_value), 5),
-        5
+        outcome_value
     ];
 
-    // Change point color to red if that value is 100
-    data.datasets[0].pointBackgroundColor = data.datasets[0].data.map((val, i) => {
-        if (i === 1) {
-            return ulnt1_positive ? 'red' : 'blue';
-        }
-        if (i === 2) {
-            return (prom_condition && arom_condition && test_condition) ? 'red' : 'blue';
-        }
-        if (i === 3) {
-            return apprensione_positive ? 'red' : 'blue';
-        }
-        if (i === 5) {
-            return pcs_score >= 52 ? 'red' : 'blue';
-        }
-        if (i === 6) {
-            return tsk_score >= 52 ? 'red' : 'blue';
-        }
-        if (i === 7) {
-            return meta_count >= 5 ? 'red' : 'blue';
-        }
-        if (i === 8) {
-            return lifestyle_count >= 4 ? 'red' : 'blue';
-        }
+    chartDataset.pointBackgroundColor = chartDataset.data.map((val, i) => {
+        if (i === 1) return ulnt1_positive ? 'red' : 'blue';
+        if (i === 2) return (prom_condition && arom_condition && test_condition) ? 'red' : 'blue';
+        if (i === 3) return apprensione_positive ? 'red' : 'blue';
+        if (i === 5) return pcs_score >= 52 ? 'red' : 'blue';
+        if (i === 6) return tsk_score >= 52 ? 'red' : 'blue';
+        if (i === 7) return meta_count >= 5 ? 'red' : 'blue';
+        if (i === 8) return lifestyle_count >= 4 ? 'red' : 'blue';
+        if (i === 9) return outcome_is_red ? 'red' : 'blue';
         return val === 100 ? 'red' : 'blue';
     });
-    data.datasets[0].pointRadius = data.datasets[0].data.map((val, i) => {
+    chartDataset.pointRadius = chartDataset.data.map((val, i) => {
         if (i === 1 && ulnt1_positive) return 6;
         if (i === 3 && apprensione_positive) return 6;
         if (i === 5 && pcs_score >= 52) return 6;
         if (i === 6 && tsk_score >= 52) return 6;
         if (i === 7 && meta_count >= 5) return 6;
         if (i === 8 && lifestyle_count >= 4) return 6;
+        if (i === 9 && outcome_is_red) return 6;
         return val === 100 ? 6 : 3;
     });
 
-    radarChart.update();
+    if (radarChart.data.labels[9] !== chartLabels[9]) {
+        radarChart.destroy();
+        radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: { labels: [...chartLabels], datasets: [chartDataset] },
+            options: chartOptions
+        });
+    } else {
+        radarChart.update();
+    }
 }
 
 document.querySelectorAll('.frozen-shoulder input, .frozen-shoulder select').forEach(el => {
@@ -273,6 +285,29 @@ document.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', () => {
     isResizing = false;
     document.body.style.cursor = 'default';
+});
+
+document.querySelectorAll('input[name="outcome-score"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        selectedOutcome = this.value;
+        outcomeSliderPos = 0;
+        const scale = outcomeScales[selectedOutcome];
+        const slider = document.getElementById('outcome-slider');
+        slider.max = scale.max;
+        slider.value = 0;
+        slider.disabled = false;
+        const displayScore = scale.inverted ? scale.max : 0;
+        document.getElementById('outcome-score-display').textContent = displayScore;
+        updateChart();
+    });
+});
+
+document.getElementById('outcome-slider').addEventListener('input', function () {
+    outcomeSliderPos = parseInt(this.value);
+    const scale = outcomeScales[selectedOutcome];
+    const displayScore = scale.inverted ? (scale.max - outcomeSliderPos) : outcomeSliderPos;
+    document.getElementById('outcome-score-display').textContent = displayScore;
+    updateChart();
 });
 
 updateChart();
