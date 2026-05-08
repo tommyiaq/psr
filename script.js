@@ -167,6 +167,12 @@ function updateChart() {
     const lifestyle_count = lifestyle_factors.filter(id => document.getElementById(id).checked).length;
     const lifestyle_value = Math.max(5, 5 + (lifestyle_count * 95 / 4));
 
+    // Dynamic labels for index 0 and 2
+    const frozen_is_red = Math.max(Math.round(segment), 5) === 100;
+    const cuffia_is_red = prom_condition && arom_condition && test_condition;
+    chartLabels[0] = frozen_is_red ? 'Frozen shoulder' : 'Rigidità';
+    chartLabels[2] = cuffia_is_red ? 'Lesione di cuffia' : 'Debolezza';
+
     // Calculate Outcome Score ({variable} point)
     let outcome_value = 5;
     let outcome_is_red = false;
@@ -236,7 +242,9 @@ function updateChart() {
         return val === 100 ? 6 : 3;
     });
 
-    if (radarChart.data.labels[9] !== chartLabels[9]) {
+    if (radarChart.data.labels[0] !== chartLabels[0] ||
+        radarChart.data.labels[2] !== chartLabels[2] ||
+        radarChart.data.labels[9] !== chartLabels[9]) {
         radarChart.destroy();
         radarChart = new Chart(ctx, {
             type: 'radar',
