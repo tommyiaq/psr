@@ -17,6 +17,16 @@
     <div id="resizer"></div>
     <div class="toolbar">
         <input type="text" id="patient-name" placeholder="Nome paziente">
+        <select id="lato">
+            <option value="sinistra">Sinistra</option>
+            <option value="destra">Destra</option>
+        </select>
+        <select id="meccanismo">
+            <option value="nocicettivo">Nocicettivo</option>
+            <option value="nocioplastico">Nocioplastico</option>
+            <option value="neuropatico">Neuropatico</option>
+            <option value="misto">Misto</option>
+        </select>
         <button onclick="downloadState()">&#8659; Download</button>
         <input type="file" id="upload-input" accept=".json" style="display:none" onchange="uploadState(this.files[0]); this.value=''">
         <button onclick="document.getElementById('upload-input').click()">&#8657; Upload</button>

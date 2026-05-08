@@ -327,11 +327,13 @@ function downloadState() {
     state._outcome = { selected: selectedOutcome, sliderPos: outcomeSliderPos };
     state._date = new Date().toISOString().slice(0, 10);
     const name = document.getElementById('patient-name').value.trim() || 'paziente';
+    const lato = document.getElementById('lato').value === 'sinistra' ? 'sn' : 'dx';
+    const meccanismo = document.getElementById('meccanismo').value;
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${name}_${state._date}.json`;
+    a.download = `${name}_${lato}_${meccanismo}_${state._date}.json`;
     a.click();
     URL.revokeObjectURL(url);
 }
@@ -348,6 +350,9 @@ function uploadState(file) {
             if (el.type === 'checkbox') el.checked = value;
             else el.value = value;
         });
+        // Backward compatibility: set defaults if not in saved state
+        if (!state['lato']) document.getElementById('lato').value = 'sinistra';
+        if (!state['meccanismo']) document.getElementById('meccanismo').value = 'nocicettivo';
         const outcome = state._outcome || {};
         selectedOutcome = outcome.selected || null;
         outcomeSliderPos = outcome.sliderPos || 0;
